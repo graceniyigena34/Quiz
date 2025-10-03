@@ -36,6 +36,28 @@ displayAllAuthors();
 
 
 
+// Question 2
+
+async function fetchDataForAllAuthors(){
+    try{
+
+        // make an api request 
+const response= await response (`https://dummyjson.com/products`);
+
+if (!response.ok){
+    throw new error(`HTTP.error!status:${response.error
+    }`);
+}
+
+
+
+
+    }catch (error){
+        const
+    }
+}
+
+
 
 
 
