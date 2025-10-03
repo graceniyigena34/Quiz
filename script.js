@@ -1,41 +1,42 @@
-async function mergeAuthorsAndComments() {
+async function fetchDataForAllAuthors() {
   try {
-    // 1. Fetch all authors
-    const authorsRes = await fetch("https://api.blog.com/authors");
-    const authors = await authorsRes.json();
-
-    // 2. Map each author to include article + comments
-    const result = await Promise.all(
-      authors.map(async (author) => {
-        const articlesWithComments = await Promise.all(
-          author.articleIds.map(async (articleId) => {
-            const commentsRes = await fetch(`https://api.blog.com/articles/${articleId}/comments`);
-            const comments = await commentsRes.json();
-
-            return {
-              articleId,
-              comments
-            };
-          })
-        );
-
-        return {
-          id: author.id,
-          name: author.name,
-          articles: articlesWithComments
-        };
-      })
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/posts?_embed=comments&_expand=user`
     );
 
-    console.log(result);
-    return result;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error(" Error merging data:", error);
+    console.log("Error fetching user data:", error);
   }
 }
 
-mergeAuthorsAndComments();
+async function displayAllAuthors() {
+  const posts = await fetchDataForAllAuthors();
+
+  if (posts && posts.length > 0) {
+    posts.forEach((post) => {
+      console.log("Post id:", post.id);
+      console.log("Author id:", post.user.id);
+      console.log("Author name:", post.user.name);
+      console.log("Article (title):", post.title);
+      console.log("Comments:", post.comments.length);
+      console.log("----");
+    });
+  } else {
+    console.log("No posts found");
+  }
+}
+
+displayAllAuthors();
+
+
+
+
 
 
 
